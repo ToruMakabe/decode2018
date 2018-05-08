@@ -1,0 +1,15 @@
+variable "resource_group_name" {
+  default = "your-rg"
+}
+
+variable "scaleset_name" {
+  default = "yourvmss01"
+}
+
+variable "jumpbox_name" {
+  default = "yourjb01"
+}
+
+variable "admin_username" {
+  default = "yourname"
+}
