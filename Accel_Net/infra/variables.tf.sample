@@ -2,12 +2,12 @@ variable "resource_group_name" {
   default = "your-rg"
 }
 
-variable "location" {
-  default = "centralus"
+variable "location01" {
+  default = "japaneast"
 }
 
-variable "scaleset_name" {
-  default = "yourvmss01"
+variable "location02" {
+  default = "japanwest"
 }
 
 variable "jumpbox_name_label" {
@@ -15,5 +15,5 @@ variable "jumpbox_name_label" {
 }
 
 variable "admin_username" {
-  default = "yourname"
+  default = "your-name"
 }

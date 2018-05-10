@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "rg" {
-  name     = "${var.resource_group_name}"
-  location = "Central US"
+  name     = "${var.resource_group_name}-${var.location}-rg"
+  location = "${var.location}"
 }
 
 resource "azurerm_virtual_network" "vnet01" {
@@ -14,7 +14,7 @@ resource "azurerm_subnet" "subnet01" {
   name                      = "subnet01"
   resource_group_name       = "${azurerm_resource_group.rg.name}"
   virtual_network_name      = "${azurerm_virtual_network.vnet01.name}"
-  address_prefix            = "10.0.2.0/24"
+  address_prefix            = "10.0.1.0/24"
   network_security_group_id = "${azurerm_network_security_group.nsg01.id}"
 }
 
@@ -64,7 +64,7 @@ resource "azurerm_public_ip" "pip02" {
   resource_group_name          = "${azurerm_resource_group.rg.name}"
   location                     = "${azurerm_resource_group.rg.location}"
   public_ip_address_allocation = "static"
-  domain_name_label            = "${var.jumpbox_name}"
+  domain_name_label            = "${var.jumpbox_name_label}"
 
   sku = "Standard"
 }
@@ -170,7 +170,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss01" {
   sku {
     name     = "Standard_D2s_v3"
     tier     = "Standard"
-    capacity = 4
+    capacity = 2
   }
 
   storage_profile_image_reference {
