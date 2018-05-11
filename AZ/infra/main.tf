@@ -3,23 +3,23 @@ resource "azurerm_resource_group" "rg" {
   location = "${var.location}"
 }
 
-resource "azurerm_virtual_network" "vnet01" {
-  name                = "vnet01"
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vnet"
   resource_group_name = "${azurerm_resource_group.rg.name}"
   location            = "${azurerm_resource_group.rg.location}"
   address_space       = ["10.0.0.0/16"]
 }
 
-resource "azurerm_subnet" "subnet01" {
-  name                      = "subnet01"
+resource "azurerm_subnet" "subnet" {
+  name                      = "subnet"
   resource_group_name       = "${azurerm_resource_group.rg.name}"
-  virtual_network_name      = "${azurerm_virtual_network.vnet01.name}"
+  virtual_network_name      = "${azurerm_virtual_network.vnet.name}"
   address_prefix            = "10.0.1.0/24"
-  network_security_group_id = "${azurerm_network_security_group.nsg01.id}"
+  network_security_group_id = "${azurerm_network_security_group.nsg.id}"
 }
 
-resource "azurerm_network_security_group" "nsg01" {
-  name                = "nsg01"
+resource "azurerm_network_security_group" "nsg" {
+  name                = "nsg"
   resource_group_name = "${azurerm_resource_group.rg.name}"
   location            = "${azurerm_resource_group.rg.location}"
 
@@ -49,8 +49,8 @@ resource "azurerm_network_security_group" "nsg01" {
   ]
 }
 
-resource "azurerm_public_ip" "pip01" {
-  name                         = "pip01"
+resource "azurerm_public_ip" "pip-vmss" {
+  name                         = "pip-vmss"
   resource_group_name          = "${azurerm_resource_group.rg.name}"
   location                     = "${azurerm_resource_group.rg.location}"
   public_ip_address_allocation = "static"
@@ -59,8 +59,8 @@ resource "azurerm_public_ip" "pip01" {
   sku = "Standard"
 }
 
-resource "azurerm_public_ip" "pip02" {
-  name                         = "pip02"
+resource "azurerm_public_ip" "pip-jb" {
+  name                         = "pip-jb"
   resource_group_name          = "${azurerm_resource_group.rg.name}"
   location                     = "${azurerm_resource_group.rg.location}"
   public_ip_address_allocation = "static"
@@ -69,62 +69,62 @@ resource "azurerm_public_ip" "pip02" {
   sku = "Standard"
 }
 
-resource "azurerm_lb" "lb01" {
-  name                = "lb01"
+resource "azurerm_lb" "lb" {
+  name                = "lb"
   resource_group_name = "${azurerm_resource_group.rg.name}"
   location            = "${azurerm_resource_group.rg.location}"
 
   frontend_ip_configuration {
-    name                 = "fipConf01"
-    public_ip_address_id = "${azurerm_public_ip.pip01.id}"
+    name                 = "fipConf"
+    public_ip_address_id = "${azurerm_public_ip.pip.id}"
   }
 
   sku = "Standard"
 }
 
-resource "azurerm_lb_backend_address_pool" "bePool01" {
-  name                = "bePool01"
+resource "azurerm_lb_backend_address_pool" "bePool" {
+  name                = "bePool"
   resource_group_name = "${azurerm_resource_group.rg.name}"
-  loadbalancer_id     = "${azurerm_lb.lb01.id}"
+  loadbalancer_id     = "${azurerm_lb.lb.id}"
 }
 
-resource "azurerm_lb_rule" "lbRule01" {
-  name                           = "lbRule01"
+resource "azurerm_lb_rule" "lbRule" {
+  name                           = "lbRule"
   resource_group_name            = "${azurerm_resource_group.rg.name}"
-  loadbalancer_id                = "${azurerm_lb.lb01.id}"
+  loadbalancer_id                = "${azurerm_lb.lb.id}"
   protocol                       = "Tcp"
   frontend_port                  = 80
   backend_port                   = 80
-  frontend_ip_configuration_name = "fipConf01"
-  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.bePool01.id}"
+  frontend_ip_configuration_name = "fipConf"
+  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.bePool.id}"
   probe_id                       = "${azurerm_lb_probe.http-probe.id}"
 }
 
 resource "azurerm_lb_probe" "http-probe" {
   name                = "http-probe"
   resource_group_name = "${azurerm_resource_group.rg.name}"
-  loadbalancer_id     = "${azurerm_lb.lb01.id}"
+  loadbalancer_id     = "${azurerm_lb.lb.id}"
   port                = 80
 }
 
-resource "azurerm_network_interface" "vmnic01" {
-  name                = "vmnic01"
+resource "azurerm_network_interface" "vmnic" {
+  name                = "vmnic"
   location            = "${azurerm_resource_group.rg.location}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
 
   ip_configuration {
-    name                          = "vmnicconf01"
-    subnet_id                     = "${azurerm_subnet.subnet01.id}"
-    public_ip_address_id          = "${azurerm_public_ip.pip02.id}"
+    name                          = "vmnicconf"
+    subnet_id                     = "${azurerm_subnet.subnet.id}"
+    public_ip_address_id          = "${azurerm_public_ip.pip.id}"
     private_ip_address_allocation = "dynamic"
   }
 }
 
-resource "azurerm_virtual_machine" "vm01" {
-  name                  = "vm01"
+resource "azurerm_virtual_machine" "vm-jb" {
+  name                  = "vm-jb"
   location              = "${azurerm_resource_group.rg.location}"
   resource_group_name   = "${azurerm_resource_group.rg.name}"
-  network_interface_ids = ["${azurerm_network_interface.vmnic01.id}"]
+  network_interface_ids = ["${azurerm_network_interface.vmnic.id}"]
   vm_size               = "Standard_B1s"
 
   delete_os_disk_on_termination = true
@@ -161,7 +161,7 @@ resource "azurerm_virtual_machine" "vm01" {
   zones = [1]
 }
 
-resource "azurerm_virtual_machine_scale_set" "vmss01" {
+resource "azurerm_virtual_machine_scale_set" "vmss" {
   name                = "${var.scaleset_name}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
   location            = "${azurerm_resource_group.rg.location}"
@@ -170,7 +170,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss01" {
   sku {
     name     = "Standard_D2s_v3"
     tier     = "Standard"
-    capacity = 2
+    capacity = 3
   }
 
   storage_profile_image_reference {
@@ -221,8 +221,8 @@ SETTINGS
 
     ip_configuration {
       name                                   = "demoIPConfiguration"
-      subnet_id                              = "${azurerm_subnet.subnet01.id}"
-      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bePool01.id}"]
+      subnet_id                              = "${azurerm_subnet.subnet.id}"
+      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bePool.id}"]
     }
   }
 

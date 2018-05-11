@@ -94,9 +94,9 @@ resource "azurerm_public_ip" "pip01" {
   resource_group_name          = "${azurerm_resource_group.rg.name}"
   location                     = "${var.location01}"
   public_ip_address_allocation = "dynamic"
-  domain_name_label            = "${var.jumpbox_name_label}01"
-
-  sku = "Basic"
+  domain_name_label            = "${var.jumpbox_name_label}01-${count.index}"
+  count                        = 1
+  sku                          = "Basic"
 }
 
 resource "azurerm_public_ip" "pip02" {
@@ -105,20 +105,20 @@ resource "azurerm_public_ip" "pip02" {
   location                     = "${var.location02}"
   public_ip_address_allocation = "dynamic"
   domain_name_label            = "${var.jumpbox_name_label}02"
-
-  sku = "Basic"
+  sku                          = "Basic"
 }
 
 resource "azurerm_network_interface" "vmnic01" {
-  name                          = "vmnic01"
+  name                          = "vmnic01-${count.index}"
   location                      = "${var.location01}"
   resource_group_name           = "${azurerm_resource_group.rg.name}"
   enable_accelerated_networking = true
+  count                         = 1
 
   ip_configuration {
-    name                          = "vmnicconf01"
+    name                          = "vmnicconf01-${count.index}"
     subnet_id                     = "${azurerm_subnet.subnet01.id}"
-    public_ip_address_id          = "${azurerm_public_ip.pip01.id}"
+    public_ip_address_id          = "${element(azurerm_public_ip.pip01.*.id, count.index)}"
     private_ip_address_allocation = "dynamic"
   }
 }
@@ -138,11 +138,12 @@ resource "azurerm_network_interface" "vmnic02" {
 }
 
 resource "azurerm_virtual_machine" "vm01" {
-  name                  = "vm01"
+  name                  = "vm01-${count.index}"
   location              = "${var.location01}"
   resource_group_name   = "${azurerm_resource_group.rg.name}"
-  network_interface_ids = ["${azurerm_network_interface.vmnic01.id}"]
+  network_interface_ids = ["${element(azurerm_network_interface.vmnic01.*.id, count.index)}"]
   vm_size               = "Standard_D64_v3"
+  count                 = 1
 
   delete_os_disk_on_termination = true
 
@@ -216,17 +217,18 @@ resource "azurerm_virtual_machine" "vm02" {
 }
 
 resource "azurerm_virtual_machine_extension" "ext01" {
-  name                 = "ext01"
+  name                 = "ext01-${count.index}"
   location             = "${var.location01}"
   resource_group_name  = "${azurerm_resource_group.rg.name}"
-  virtual_machine_name = "${azurerm_virtual_machine.vm01.name}"
+  virtual_machine_name = "${element(azurerm_virtual_machine.vm01.*.name, count.index)}"
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.0"
+  count                = 1
 
   settings = <<SETTINGS
     {
-        "commandToExecute": "apt-get -y install build-essential && apt-get -y install git && git clone https://github.com/Microsoft/ntttcp-for-linux && cd ntttcp-for-linux/src && make && make install && apt-get -y install iperf3"
+        "commandToExecute": "apt-get -y install build-essential && apt-get -y install git && git clone https://github.com/Microsoft/ntttcp-for-linux && cd ntttcp-for-linux/src && make && make install"
     }
 SETTINGS
 }
@@ -242,7 +244,7 @@ resource "azurerm_virtual_machine_extension" "ext02" {
 
   settings = <<SETTINGS
     {
-        "commandToExecute": "apt-get -y install build-essential && apt-get -y install git && git clone https://github.com/Microsoft/ntttcp-for-linux && cd ntttcp-for-linux/src && make && make install && apt-get -y install iperf3"
+        "commandToExecute": "apt-get -y install build-essential && apt-get -y install git && git clone https://github.com/Microsoft/ntttcp-for-linux && cd ntttcp-for-linux/src && make && make install"
     }
 SETTINGS
 }
