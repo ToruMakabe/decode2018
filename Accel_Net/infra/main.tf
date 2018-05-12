@@ -228,7 +228,7 @@ resource "azurerm_virtual_machine_extension" "ext01" {
 
   settings = <<SETTINGS
     {
-        "commandToExecute": "apt-get -y install build-essential && apt-get -y install git && git clone https://github.com/Microsoft/ntttcp-for-linux && cd ntttcp-for-linux/src && make && make install"
+        "commandToExecute": "apt-get -y install iperf"
     }
 SETTINGS
 }
@@ -244,7 +244,7 @@ resource "azurerm_virtual_machine_extension" "ext02" {
 
   settings = <<SETTINGS
     {
-        "commandToExecute": "apt-get -y install build-essential && apt-get -y install git && git clone https://github.com/Microsoft/ntttcp-for-linux && cd ntttcp-for-linux/src && make && make install"
+        "commandToExecute": "apt-get -y install iperf"
     }
 SETTINGS
 }
