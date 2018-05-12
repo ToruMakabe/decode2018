@@ -14,6 +14,10 @@ variable "jumpbox_name_label" {
   default = "your-label"
 }
 
+variable "vm01_count" {
+  default = 2
+}
+
 variable "admin_username" {
   default = "your-name"
 }

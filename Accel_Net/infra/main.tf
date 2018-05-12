@@ -90,12 +90,12 @@ resource "azurerm_network_security_group" "nsg02" {
 }
 
 resource "azurerm_public_ip" "pip01" {
-  name                         = "pip01"
+  name                         = "pip01-${count.index}"
   resource_group_name          = "${azurerm_resource_group.rg.name}"
   location                     = "${var.location01}"
   public_ip_address_allocation = "dynamic"
   domain_name_label            = "${var.jumpbox_name_label}01-${count.index}"
-  count                        = 1
+  count                        = "${var.vm01_count}"
   sku                          = "Basic"
 }
 
@@ -113,7 +113,7 @@ resource "azurerm_network_interface" "vmnic01" {
   location                      = "${var.location01}"
   resource_group_name           = "${azurerm_resource_group.rg.name}"
   enable_accelerated_networking = true
-  count                         = 1
+  count                         = "${var.vm01_count}"
 
   ip_configuration {
     name                          = "vmnicconf01-${count.index}"
@@ -143,7 +143,7 @@ resource "azurerm_virtual_machine" "vm01" {
   resource_group_name   = "${azurerm_resource_group.rg.name}"
   network_interface_ids = ["${element(azurerm_network_interface.vmnic01.*.id, count.index)}"]
   vm_size               = "Standard_D64_v3"
-  count                 = 1
+  count                 = "${var.vm01_count}"
 
   delete_os_disk_on_termination = true
 
@@ -155,14 +155,14 @@ resource "azurerm_virtual_machine" "vm01" {
   }
 
   storage_os_disk {
-    name              = "osdisk01"
+    name              = "osdisk01-${count.index}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "vm01"
+    computer_name  = "vm01-${count.index}"
     admin_username = "${var.admin_username}"
     admin_password = ""
   }
@@ -224,7 +224,7 @@ resource "azurerm_virtual_machine_extension" "ext01" {
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.0"
-  count                = 1
+  count                = "${var.vm01_count}"
 
   settings = <<SETTINGS
     {
