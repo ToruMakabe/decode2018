@@ -38,5 +38,6 @@ website/vendor
 # backend configuration
 backend.tf
 
-# variables
+# variables and parameters
 variables.tf
+azuredeploy.parameters.json

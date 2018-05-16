@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceName": {
+            "value": "your-aks-name"
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "dnsPrefix": {
+            "value": "your-aks-name"
+        },
+        "agentCount": {
+            "value": 2
+        },
+        "agentVMSize": {
+            "value": "Standard_B2ms"
+        },
+        "servicePrincipalClientId": {
+            "value": "your-servicePrincipalClientId"
+        },
+        "servicePrincipalClientSecret": {
+            "value": "your-servicePrincipalClientSecret"
+        },
+        "kubernetesVersion": {
+            "value": "1.9.6"
+        },
+        "workspaceName": {
+            "value": "your-oms-workspace-name"
+        },
+        "omsWorkspaceId": {
+            "value": "/subscriptions/your-subscription/resourcegroups/your-oms-resourcegroup/providers/microsoft.operationalinsights/workspaces/your-oms-workspace-name"
+        },
+        "workspaceRegion": {
+            "value": "eastus"
+        },
+        "enableHttpApplicationRouting": {
+            "value": true
+        },
+        "networkPlugin": {
+            "value": "azure"
+        },
+        "vnetSubnetID": {
+            "value": "/subscriptions/your-subscription/resourceGroups/your-vnet-resourcegroup/providers/Microsoft.Network/virtualNetworks/your-vnet/subnets/default"
+        },
+        "serviceCidr": {
+            "value": "10.1.0.0/16"
+        },
+        "dnsServiceIP": {
+            "value": "10.1.0.10"
+        },
+        "dockerBridgeCidr": {
+            "value": "172.17.0.1/16"
+        }
+    }
+}
