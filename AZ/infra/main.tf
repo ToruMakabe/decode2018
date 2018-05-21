@@ -121,7 +121,7 @@ resource "azurerm_network_interface" "vmnic" {
 }
 
 resource "azurerm_virtual_machine" "vm-jb" {
-  name                  = "vm-jb"
+  name                  = "${var.jumpbox_name_label}-${var.location}"
   location              = "${azurerm_resource_group.rg.location}"
   resource_group_name   = "${azurerm_resource_group.rg.name}"
   network_interface_ids = ["${azurerm_network_interface.vmnic.id}"]
@@ -144,7 +144,7 @@ resource "azurerm_virtual_machine" "vm-jb" {
   }
 
   os_profile {
-    computer_name  = "jumpboxvm"
+    computer_name  = "${var.jumpbox_name_label}-${var.location}"
     admin_username = "${var.admin_username}"
     admin_password = ""
   }
@@ -162,7 +162,7 @@ resource "azurerm_virtual_machine" "vm-jb" {
 }
 
 resource "azurerm_virtual_machine_scale_set" "vmss" {
-  name                = "${var.scaleset_name}"
+  name                = "${var.scaleset_name}-${var.location}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
   location            = "${azurerm_resource_group.rg.location}"
   upgrade_policy_mode = "Manual"
@@ -188,7 +188,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
   }
 
   os_profile {
-    computer_name_prefix = "vmss"
+    computer_name_prefix = "${var.scaleset_name}-${var.location}"
     admin_username       = "${var.admin_username}"
     admin_password       = ""
   }
@@ -216,7 +216,7 @@ SETTINGS
   }
 
   network_profile {
-    name    = "terraformnetworkprofile"
+    name    = "tfnetworkprofile"
     primary = true
 
     ip_configuration {
