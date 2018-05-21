@@ -94,7 +94,7 @@ resource "azurerm_public_ip" "pip01" {
   resource_group_name          = "${azurerm_resource_group.rg.name}"
   location                     = "${var.location01}"
   public_ip_address_allocation = "dynamic"
-  domain_name_label            = "${var.jumpbox_name_label}01-${count.index}"
+  domain_name_label            = "${var.vm_name_label}01-${count.index}"
   count                        = "${var.vm01_count}"
   sku                          = "Basic"
 }
@@ -104,7 +104,7 @@ resource "azurerm_public_ip" "pip02" {
   resource_group_name          = "${azurerm_resource_group.rg.name}"
   location                     = "${var.location02}"
   public_ip_address_allocation = "dynamic"
-  domain_name_label            = "${var.jumpbox_name_label}02"
+  domain_name_label            = "${var.vm_name_label}02"
   sku                          = "Basic"
 }
 
@@ -138,7 +138,7 @@ resource "azurerm_network_interface" "vmnic02" {
 }
 
 resource "azurerm_virtual_machine" "vm01" {
-  name                  = "vm01-${count.index}"
+  name                  = "${var.vm_name_label}01-${count.index}"
   location              = "${var.location01}"
   resource_group_name   = "${azurerm_resource_group.rg.name}"
   network_interface_ids = ["${element(azurerm_network_interface.vmnic01.*.id, count.index)}"]
@@ -155,14 +155,14 @@ resource "azurerm_virtual_machine" "vm01" {
   }
 
   storage_os_disk {
-    name              = "osdisk01-${count.index}"
+    name              = "${var.vm_name_label}01-${count.index}-osdisk01"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "vm01-${count.index}"
+    computer_name  = "${var.vm_name_label}01-${count.index}"
     admin_username = "${var.admin_username}"
     admin_password = ""
   }
@@ -178,7 +178,7 @@ resource "azurerm_virtual_machine" "vm01" {
 }
 
 resource "azurerm_virtual_machine" "vm02" {
-  name                  = "vm02"
+  name                  = "${var.vm_name_label}02"
   location              = "${var.location02}"
   resource_group_name   = "${azurerm_resource_group.rg.name}"
   network_interface_ids = ["${azurerm_network_interface.vmnic02.id}"]
@@ -194,14 +194,14 @@ resource "azurerm_virtual_machine" "vm02" {
   }
 
   storage_os_disk {
-    name              = "osdisk02"
+    name              = "${var.vm_name_label}02-osdisk01"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "vm02"
+    computer_name  = "${var.vm_name_label}02"
     admin_username = "${var.admin_username}"
     admin_password = ""
   }
