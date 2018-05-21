@@ -10,7 +10,7 @@ variable "location02" {
   default = "japanwest"
 }
 
-variable "jumpbox_name_label" {
+variable "vm_name_label" {
   default = "your-label"
 }
 
