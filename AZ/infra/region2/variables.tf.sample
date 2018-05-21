@@ -1,0 +1,19 @@
+variable "resource_group_name" {
+  default = "your-rg"
+}
+
+variable "location" {
+  default = "francecentral"
+}
+
+variable "scaleset_name" {
+  default = "yourvmss01"
+}
+
+variable "jumpbox_name_label" {
+  default = "your-label"
+}
+
+variable "admin_username" {
+  default = "yourname"
+}
