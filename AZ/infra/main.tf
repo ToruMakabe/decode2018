@@ -166,9 +166,10 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
   resource_group_name = "${azurerm_resource_group.rg.name}"
   location            = "${azurerm_resource_group.rg.location}"
   upgrade_policy_mode = "Manual"
+  overprovision       = true
 
   sku {
-    name     = "Standard_D2s_v3"
+    name     = "Standard_F1s"
     tier     = "Standard"
     capacity = 3
   }
