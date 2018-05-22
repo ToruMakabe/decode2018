@@ -1,5 +1,5 @@
 variable "resource_group_name" {
-  default = "your-rg"
+  default = "your-demo-vmss"
 }
 
 variable "location" {
@@ -11,7 +11,7 @@ variable "scaleset_name" {
 }
 
 variable "jumpbox_name_label" {
-  default = "your-label"
+  default = "your-jb-label"
 }
 
 variable "admin_username" {
