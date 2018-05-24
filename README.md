@@ -103,6 +103,8 @@ Accel_Net/infra $ terraform destroy
   * Register Microsoft.TerraformOSS kubernetes provider
   * Deploy NGINX container to AKS as kubernetes pod
 
+Need to [resister private preview](https://azure.microsoft.com/ja-jp/blog/introducing-the-azure-terraform-resource-provider/) (as of May 2018)
+
 ```
 Terraform_RP $ sample.azuredeploy.parameters.json azuredeploy.parameters.json
 ```
